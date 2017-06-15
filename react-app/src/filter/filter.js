@@ -43,12 +43,12 @@ class BrandSelect extends Component{
         if(data.value === 'Не выбрано'){
             this.props.changeFlag("disabled");
             this.props.changeSelectedBrand(undefined);
-            this.props.change('');
+            this.props.change({[data.name]: ''});
         }
         else {
             this.props.changeFlag("");
             this.props.changeSelectedBrand(data.value);
-            this.props.change(data.value);
+            this.props.change({[data.name]: data.value});
         }
     }
 
@@ -60,6 +60,7 @@ class BrandSelect extends Component{
         return(
             <Dropdown
                 id="brand-select"
+                name="brand"
                 placeholder='Марка автомобиля'
                 search
                 selection
@@ -100,8 +101,8 @@ class ModelSelect extends Component{
             }.bind(this));
     }
 
-    onChange(e){
-        this.props.change(e.target.value);
+    onChange(e, data){
+        this.props.change({[data.name]: data.value});
     }
 
     render(){
@@ -113,6 +114,7 @@ class ModelSelect extends Component{
             <Dropdown
                 placeholder='Модель автомобиля'
                 id="model-select"
+                name="model"
                 search
                 selection
                 options={options}
@@ -189,12 +191,13 @@ class NumberInput extends Component{
     }
 
     onChange(e){
-        this.props.change(e.target.value);
+        this.props.change({[e.target.name]: e.target.value});
     }
 
     render(){
         return(
             <Input
+                name={this.props.name}
                 placeholder={this.props.label}
                 type="number"
                 onChange={this.onChange}
@@ -211,7 +214,7 @@ class Radio extends Component{
     }
 
     onCheck(e){
-        this.props.change(e.target.value);
+        this.props.change({[e.target.name]: e.target.value});
     }
 
     render(){
@@ -245,20 +248,22 @@ class FilterForm extends Component{
 
                     <div className="form-group">
                         <Selection
-                            changeBrand={this.props.changeBrand}
-                            changeModel={this.props.changeModel}
+                            changeBrand={this.props.changeForm}
+                            changeModel={this.props.changeForm}
                         />
                     </div>
 
                     <div className="form-group">
                         <label>Год выпуска
                             <NumberInput
+                                name="yearFrom"
                                 label="С"
-                                change={this.props.changeYearFrom}
+                                change={this.props.changeForm}
                             />
                             <NumberInput
+                                name="yearTo"
                                 label="По"
-                                change={this.props.changeYearTo}
+                                change={this.props.changeForm}
                             />
                         </label>
                     </div>
@@ -266,12 +271,14 @@ class FilterForm extends Component{
                     <div className="form-group">
                         <label>Цена, BYN
                             <NumberInput
+                                name="costFrom"
                                 label="От"
-                                change={this.props.changeCostFrom}
+                                change={this.props.changeForm}
                             />
                             <NumberInput
+                                name="costTo"
                                 label="До"
-                                change={this.props.changeCostTo}
+                                change={this.props.changeForm}
                             />
                         </label>
                     </div>
@@ -279,12 +286,14 @@ class FilterForm extends Component{
                     <div className="form-group">
                         <label>Объем двигателя
                             <NumberInput
+                                name="volumeFrom"
                                 label="От"
-                                change={this.props.changeVolumeFrom}
+                                change={this.props.changeForm}
                             />
                             <NumberInput
+                                name="volumeTo"
                                 label="До"
-                                change={this.props.changeVolumeTo}
+                                change={this.props.changeForm}
                             />
                         </label>
                     </div>
@@ -294,7 +303,7 @@ class FilterForm extends Component{
                             <Radio
                                 name="typeOfFuel"
                                 value={fuelRadio}
-                                change={this.props.changeTypeOfFuel}
+                                change={this.props.changeForm}
                             />
                         </label>
                     </div>
@@ -304,7 +313,7 @@ class FilterForm extends Component{
                             <Radio
                                 name="transmission"
                                 value={transmissionRadio}
-                                change={this.props.changeTransmission}
+                                change={this.props.changeForm}
                             />
                         </label>
                     </div>
@@ -320,29 +329,8 @@ class FilterForm extends Component{
 class FilterPage extends Component{
     constructor(props){
         super(props);
-        this.state = {
-            brand: '',
-            model: '',
-            yearFrom: '',
-            yearTo: '',
-            costFrom: '',
-            costTo: '',
-            volumeFrom: '',
-            volumeTo: '',
-            transmission: '',
-            typeOfFuel: ''
-        };
 
-        this.changeBrand = this.changeBrand.bind(this);
-        this.changeModel = this.changeModel.bind(this);
-        this.changeYearFrom = this.changeYearFrom.bind(this);
-        this.changeYearTo = this.changeYearTo.bind(this);
-        this.changeCostFrom = this.changeCostFrom.bind(this);
-        this.changeCostTo = this.changeCostTo.bind(this);
-        this.changeVolumeFrom = this.changeVolumeFrom.bind(this);
-        this.changeVolumeTo = this.changeVolumeTo.bind(this);
-        this.changeTransmission = this.changeTransmission.bind(this);
-        this.changeTypeOfFuel = this.changeTypeOfFuel.bind(this);
+        this.changeForm = this.changeForm.bind(this);
         this.onClick = this.onClick.bind(this);
     }
 
@@ -354,85 +342,15 @@ class FilterPage extends Component{
     changeForm(obj){
         for(let key in obj){
             this.setState({
-                form : obj[key]
+                [key] : obj[key]
             })
         }
     }
 
-    changeBrand(value){
-        this.setState({
-            brand : value
-        })
-    }
-
-    changeModel(value){
-        this.setState({
-            model : value
-        })
-    }
-
-    changeYearFrom(value){
-        this.setState({
-            yearFrom : value
-        })
-    }
-
-    changeYearTo(value){
-        this.setState({
-            yearTo : value
-        })
-    }
-
-    changeCostFrom(value){
-        this.setState({
-            costFrom : value
-        })
-    }
-
-    changeCostTo(value){
-        this.setState({
-            costTo : value
-        })
-    }
-
-    changeVolumeFrom(value){
-        this.setState({
-            volumeFrom : value
-        })
-    }
-
-    changeVolumeTo(value){
-        this.setState({
-            volumeTo : value
-        })
-    }
-
-    changeTypeOfFuel(value){
-        this.setState({
-            typeOfFuel : value
-        });
-    }
-
-    changeTransmission(value){
-        this.setState({
-            transmission : value
-        })
-    }
-
-
     render(){
         return(
             <FilterForm
-                changeBrand = {this.changeBrand}
-                changeModel = {this.changeModel}
-                changeYearFrom = {this.changeYearFrom}
-                changeYearTo = {this.changeYearTo}
-                changeCostFrom = {this.changeCostFrom}
-                changeCostTo = {this.changeCostTo}
-                changeVolumeFrom = {this.changeVolumeFrom}
-                changeVolumeTo = {this.changeVolumeTo}
-                changeTypeOfFuel = {this.changeTypeOfFuel}
-                changeTransmission = {this.changeTransmission}
+                changeForm = {this.changeForm}
                 onClick = {this.onClick}
             />
         )
